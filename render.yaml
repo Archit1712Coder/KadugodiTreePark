@@ -15,7 +15,8 @@ services:
         value: "postgresql://postgres.kzhkodyfqzgboxsgeiuy:saideeparchit@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres"
     autoDeploy: true
 
-  - type: static
+  - type: web
+    runtime: static
     name: scotland-yard-frontend
     plan: free
     rootDir: artifacts/scotland-yard
