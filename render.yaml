@@ -15,17 +15,15 @@ services:
         value: "postgresql://postgres.kzhkodyfqzgboxsgeiuy:saideeparchit@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres"
     autoDeploy: true
 
-  - type: web
+  - type: static
     name: scotland-yard-frontend
     plan: free
-    runtime: node
     rootDir: artifacts/scotland-yard
     buildCommand: |
       pnpm install --no-frozen-lockfile 
       pnpm run build
-    startCommand: pnpm run dev
     staticPublishPath: dist
-    envVars:
+    envVars:        
       - key: VITE_API_BASE_URL
         value: https://api-server.onrender.com
       - key: VITE_WS_URL
