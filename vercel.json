@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://ktpapi.onrender.com/api/:path*"
+      "destination": "https://kadugodi-tree-park--nadellasaideep.replit.app/api/:path*"
     },
     {
       "source": "/(.*)",
