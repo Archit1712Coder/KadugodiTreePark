@@ -31,10 +31,11 @@ function useElapsedTimer(running: boolean) {
         setElapsed(Math.floor((Date.now() - startRef.current!) / 1000));
       }, 1000);
       return () => clearInterval(id);
-    } else {
-      startRef.current = null;
-      setElapsed(0);
     }
+
+    startRef.current = null;
+    setElapsed(0);
+    return;
   }, [running]);
 
   return elapsed;
@@ -389,7 +390,7 @@ export default function Home() {
                         No public operations found. Create one!
                       </p>
                     )}
-                    {publicLobbies?.map((lobby) => (
+                    {(Array.isArray(publicLobbies) ? publicLobbies : []).map((lobby) => (
                       <div
                         key={lobby.roomCode}
                         className="flex items-center justify-between rounded-lg border border-border/50 p-3 bg-muted/10 hover:bg-muted/20 transition-colors"
