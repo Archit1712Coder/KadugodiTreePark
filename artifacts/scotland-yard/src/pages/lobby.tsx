@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Copy, Loader2, LogOut, UserX, Shuffle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { playCopyCode, playStartGame } from "@/lib/sounds";
+import { playCopyCode, playStartGame, startLobbyMusic, stopLobbyMusic } from "@/lib/sounds";
 
 export default function Lobby() {
   const { roomCode } = useParams<{ roomCode: string }>();
@@ -30,6 +30,15 @@ export default function Lobby() {
       setLocation(`/game/${roomCode}`);
     }
   }, [game?.status, roomCode, setLocation]);
+
+  useEffect(() => {
+    if (game?.status === "lobby") {
+      startLobbyMusic();
+    } else {
+      stopLobbyMusic();
+    }
+    return () => stopLobbyMusic();
+  }, [game?.status]);
 
   useEffect(() => {
     if (!game || !myPlayerId || game.status !== "lobby") return;
@@ -61,6 +70,7 @@ export default function Lobby() {
   };
 
   const handleLeave = () => {
+    stopLobbyMusic();
     localStorage.removeItem("playerId");
     localStorage.removeItem("playerName");
     setLocation("/");

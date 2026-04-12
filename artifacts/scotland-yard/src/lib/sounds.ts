@@ -263,3 +263,59 @@ export function playReturnHQ() {
     });
   });
 }
+
+// ── 14. Lobby Background Music ───────────────────────────────────────────────
+// Ambient suspenseful music for waiting in lobby
+let lobbyMusicInterval: ReturnType<typeof setInterval> | null = null;
+let lobbyMusicCtx: AudioContext | null = null;
+
+export function startLobbyMusic() {
+  if (lobbyMusicInterval) return; // already playing
+
+  lobbyMusicCtx = getCtx();
+  let chordIndex = 0;
+  const chords = [
+    [220, 277.18, 329.63], // A minor 7
+    [196, 246.94, 293.66], // G major
+    [220, 293.66, 349.23], // A minor
+    [196, 261.63, 329.63], // G major 7
+  ];
+
+  lobbyMusicInterval = setInterval(() => {
+    if (!lobbyMusicCtx || lobbyMusicCtx.state !== 'running') {
+      stopLobbyMusic();
+      return;
+    }
+
+    const chord = chords[chordIndex % chords.length];
+    const startTime = lobbyMusicCtx.currentTime;
+    const duration = 1.4;
+
+    chord.forEach((freq, index) => {
+      const osc = lobbyMusicCtx!.createOscillator();
+      const gain = lobbyMusicCtx!.createGain();
+
+      osc.connect(gain);
+      gain.connect(lobbyMusicCtx!.destination);
+
+      osc.type = index === 0 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(freq, startTime);
+
+      gain.gain.setValueAtTime(0.025 / (index + 1), startTime);
+      gain.gain.exponentialRampToValueAtTime(0.0008, startTime + duration);
+
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    });
+
+    chordIndex++;
+  }, 1400); // loop chords slowly for a relaxed lobby atmosphere
+}
+
+export function stopLobbyMusic() {
+  if (lobbyMusicInterval) {
+    clearInterval(lobbyMusicInterval);
+    lobbyMusicInterval = null;
+  }
+  lobbyMusicCtx = null;
+}
